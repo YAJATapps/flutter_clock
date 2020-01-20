@@ -6,31 +6,36 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
-import 'hand.dart';
-
 /// A clock hand that is drawn with [CustomPainter]
 ///
 /// The hand's length scales based on the clock's size.
 /// This hand is used to build the second and minute hands, and demonstrates
 /// building a custom hand.
-class DrawnHand extends Hand {
-  /// Create a const clock [Hand].
+class DrawnHand extends StatelessWidget {
+  /// Create a const clock.
   ///
   /// All of the parameters are required and must not be null.
   const DrawnHand({
-    @required Color color,
+    @required this.color,
     @required this.thickness,
-    @required double size,
-    @required double angleRadians,
+    @required this.size,
+    @required this.angleRadians,
   })  : assert(color != null),
         assert(thickness != null),
         assert(size != null),
-        assert(angleRadians != null),
-        super(
-          color: color,
-          size: size,
-          angleRadians: angleRadians,
-        );
+        assert(angleRadians != null);
+
+  /// Hand color.
+  final Color color;
+
+  /// Hand length, as a percentage of the smaller side of the clock's parent
+  /// container.
+  final double size;
+
+  /// The angle, in radians, at which the hand is drawn.
+  ///
+  /// This angle is measured from the 12 o'clock position.
+  final double angleRadians;
 
   /// How thick the hand should be drawn, in logical pixels.
   final double thickness;
@@ -73,7 +78,7 @@ class _HandPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final center = (Offset.zero & size).center;
+    final center = (Offset(0, 0) & size).center;
     // We want to start at the top, not at the x-axis, so add pi/2.
     final angle = angleRadians - math.pi / 2.0;
     final length = size.shortestSide * 0.5 * handSize;
@@ -81,8 +86,7 @@ class _HandPainter extends CustomPainter {
     final linePaint = Paint()
       ..color = color
       ..strokeWidth = lineWidth
-      ..strokeCap = StrokeCap.square;
-
+      ..strokeCap = StrokeCap.round;
     canvas.drawLine(center, position, linePaint);
   }
 
